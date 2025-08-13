@@ -53,7 +53,7 @@ pipeline {
     stage('Deploy to S3') {
       steps {
         // Use the AWS Credentials binding plugin (configured with ID 'aws-jenkins-creds')
-        withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-jenkins-creds']]) {
+        withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: '1']]) {
           sh '''
             apk add --no-cache python3 py3-pip
             pip3 install --no-cache-dir awscli
