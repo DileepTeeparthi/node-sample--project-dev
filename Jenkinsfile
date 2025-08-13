@@ -12,7 +12,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'master', url: 'https://github.com/DileepTeeparthi/node-sample--project.git'
+                git branch: 'master', url: 'https://github.com/DileepTeeparthi/node-sample--project-dev.git'
             }
         }
 
