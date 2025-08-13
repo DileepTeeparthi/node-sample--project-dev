@@ -4,7 +4,7 @@ pipeline {
     environment {
         NODE_ENV = 'production'
         AWS_REGION = 'ap-south-1'
-        S3_BUCKET = 'nodebuck'
+        S3_BUCKET = 'nodedill'
         DOCKER_NODE_IMAGE = 'node:18-alpine'
         DOCKER_AWS_CLI_IMAGE = 'amazon/aws-cli'
     }
