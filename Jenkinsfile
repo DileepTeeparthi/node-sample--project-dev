@@ -3,10 +3,8 @@ pipeline {
 
     environment {
         NODE_ENV = 'production'
-        AWS_REGION = 'ap-south-1'
-        S3_BUCKET = 'nodedill'
-        DOCKER_NODE_IMAGE = 'node:18-alpine'
-        DOCKER_AWS_CLI_IMAGE = 'amazon/aws-cli'
+        EC2_HOST = 'ec2-user@43.205.235.218'   // EC2 username + Public IP
+        EC2_KEY = 'pemkey303'                  // Jenkins Credentials ID (SSH private key)
     }
 
     stages {
@@ -19,11 +17,11 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 bat """
-                    docker run --rm ^
-                      -u root ^
-                      -w /app ^
-                      -v %CD%:/app ^
-                      %DOCKER_NODE_IMAGE% sh -c "apk add --no-cache python3 make g++ && npm ci"
+                docker run --rm ^
+                    -u root ^
+                    -w /app ^
+                    -v %CD%:/app ^
+                    node:18-alpine sh -c "apk add --no-cache python3 make g++ && npm ci"
                 """
             }
         }
@@ -31,61 +29,24 @@ pipeline {
         stage('Run Tests') {
             steps {
                 bat """
-                    docker run --rm ^
-                      -u root ^
-                      -w /app ^
-                      -v %CD%:/app ^
-                      %DOCKER_NODE_IMAGE% sh -c "npm test"
+                docker run --rm ^
+                    -u root ^
+                    -w /app ^
+                    -v %CD%:/app ^
+                    node:18-alpine sh -c "npm test"
                 """
             }
         }
 
-        stage('Build') {
+        stage('Deploy to EC2') {
             steps {
-                bat """
-                    docker run --rm ^
-                      -u root ^
-                      -w /app ^
-                      -v %CD%:/app ^
-                      %DOCKER_NODE_IMAGE% sh -c "npm run build"
-                """
-            }
-        }
-
-        stage('Verify Build Folder') {
-            steps {
-                bat """
-                    echo Checking for build output...
-                    if exist build (
-                        echo Found build folder:
-                        dir build
-                    ) else if exist dist (
-                        echo Found dist folder:
-                        dir dist
-                    ) else (
-                        echo ERROR: No build or dist folder found!
-                        exit 1
-                    )
-                """
-            }
-        }
-
-        stage('Deploy to S3') {
-            steps {
-                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: '1']]) {
+                sshagent([env.EC2_KEY]) {
                     bat """
-                        setlocal EnableDelayedExpansion
-                        set DEPLOY_DIR=build
-                        if not exist build if exist dist set DEPLOY_DIR=dist
+                        REM Copy project files to EC2
+                        scp -o StrictHostKeyChecking=no -r * %EC2_HOST%:/home/ec2-user/app
 
-                        echo Deploying from !DEPLOY_DIR! folder to S3...
-
-                        docker run --rm ^
-                          -w /app ^
-                          -v %CD%/!DEPLOY_DIR!:/app/!DEPLOY_DIR! ^
-                          -e AWS_ACCESS_KEY_ID=%AWS_ACCESS_KEY_ID% ^
-                          -e AWS_SECRET_ACCESS_KEY=%AWS_SECRET_ACCESS_KEY% ^
-                          %DOCKER_AWS_CLI_IMAGE% s3 sync !DEPLOY_DIR!/ s3://%S3_BUCKET% --region %AWS_REGION% --delete
+                        REM SSH into EC2 and restart app
+                        ssh -o StrictHostKeyChecking=no %EC2_HOST% "cd /home/ec2-user/app && npm install --production && pkill -f 'node server.js' || true && nohup node server.js > app.log 2>&1 &"
                     """
                 }
             }
@@ -94,10 +55,10 @@ pipeline {
 
     post {
         success {
-            echo "✅ Build and deployment succeeded!"
+            echo "✅ Build and deployment to EC2 succeeded!"
         }
         failure {
-            echo "❌ Build or deployment failed."
+            echo "❌ Deployment failed."
         }
     }
 }
