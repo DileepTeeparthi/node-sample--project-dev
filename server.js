@@ -33,8 +33,7 @@ app.use((err, req, res, next) => {
 app.use((req, res) => {
     res.status(404).json({ error: 'Endpoint not found' });
 });
-
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-    console.log(`Visit http://localhost:${PORT} to see available endpoints`);
+app.listen(PORT, "0.0.0.0", () => {
+    console.log(`✅ Server is running on port ${PORT}`);
+    console.log(`🌍 Accessible at http://http://43.205.235.218/:${PORT}`);
 });
