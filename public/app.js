@@ -1,4 +1,4 @@
-    // API base URL - using local server
+    // API base URL - using relative path to local API
     const API_BASE_URL = '/api/books';   
 
     // DOM elements
