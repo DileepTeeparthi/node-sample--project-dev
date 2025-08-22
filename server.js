@@ -35,5 +35,5 @@ app.use((req, res) => {
 });
 app.listen(PORT, "0.0.0.0", () => {
     console.log(`✅ Server is running on port ${PORT}`);
-    console.log(`🌍 Accessible at http://http://43.205.235.218/:${PORT}`);
+    console.log(`🌍 Server running at http://localhost:${PORT}`);
 });
