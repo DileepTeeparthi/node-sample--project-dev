@@ -1,7 +1,7 @@
     // API base URL - dynamically set based on environment
 const API_BASE_URL = window.location.hostname === 'localhost' 
-    ? 'http://localhost:3000/api/books' 
-    : '/api/books'; 
+    ? 'http://localhost:3000' 
+    : '/'; 
     // DOM elements
     const booksContainer = document.getElementById('booksContainer');
     const loadingSpinner = document.getElementById('loadingSpinner');
