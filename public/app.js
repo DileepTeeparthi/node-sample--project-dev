@@ -1,5 +1,5 @@
-    // API base URL - always use local server
-    const API_BASE_URL = '/api/books';  
+    // API base URL - dynamically set based on environment
+    const API_BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:3000/api/books' : 'https://online-books-api.onrender.com/api/books';   
 
     // DOM elements
     const booksContainer = document.getElementById('booksContainer');
@@ -24,22 +24,22 @@
         editBookForm.addEventListener('submit', handleEditBook);
     }
 
-   async function loadBooks() {
-    showLoading(true);
-    try {
-        const response = await fetch(API_BASE_URL);
-        const data = await response.json();
-        if (data.success) {
-            books = data.data;
-            renderBooks(books);
-        } else {
-            booksContainer.innerHTML = '<p class="text-danger">Failed to load books.</p>';
+    async function loadBooks() {
+        showLoading(true);
+        try {
+            const response = await fetch(API_BASE_URL);
+            const data = await response.json();
+            if (data.success) {
+                books = data.data;
+                renderBooks(books);
+            } else {
+                booksContainer.innerHTML = '<p class="text-danger">Failed to load books.</p>';
+            }
+        } catch (error) {
+            booksContainer.innerHTML = `<p class="text-danger">Error: ${error.message}</p>`;
         }
-    } catch (error) {
-        booksContainer.innerHTML = `<p class="text-danger">Error: ${error.message}</p>`;
+        showLoading(false);
     }
-    showLoading(false);
-}
 
     function renderBooks(booksToRender) {
         if (booksToRender.length === 0) {
