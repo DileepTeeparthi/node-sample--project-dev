@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const axios = require('axios'); // Make sure to install axios: npm install axios
 const booksRouter = require('./routes/books');
 const path = require('path');
 
@@ -14,6 +15,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // Serve static files from public directory
 app.use(express.static(path.join(__dirname, 'public')));
+
 
 // Routes
 app.use('/api/books', booksRouter);
