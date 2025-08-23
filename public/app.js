@@ -1,5 +1,5 @@
-    // API base URL - using relative path to local API
-    const API_BASE_URL = '/api/books';   
+    // API base URL - dynamically set based on environment
+    const API_BASE_URL = window.location.hostname === 'localhost' ? '/api/books' : 'https://online-books-api.onrender.com/api/books';   
 
     // DOM elements
     const booksContainer = document.getElementById('booksContainer');
