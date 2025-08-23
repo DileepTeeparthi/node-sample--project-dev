@@ -1,5 +1,5 @@
     // API base URL - always use local server
-    const API_BASE_URL = 'http://localhost:3000/api/books';   
+    const API_BASE_URL = 'https://online-books-api.onrender.com/api/books';   
 
     // DOM elements
     const booksContainer = document.getElementById('booksContainer');
