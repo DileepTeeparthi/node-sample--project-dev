@@ -1,5 +1,5 @@
     // API base URL - always use local server
-    const API_BASE_URL = 'api/books';   
+    const API_BASE_URL = `${window.location.origin}/api/books`;  
 
     // DOM elements
     const booksContainer = document.getElementById('booksContainer');
