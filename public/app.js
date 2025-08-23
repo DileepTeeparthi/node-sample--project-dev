@@ -1,5 +1,5 @@
     // API base URL - always use local server
-    const API_BASE_URL = `${window.location.origin}/api/books`;  
+    const API_BASE_URL = '/api/books';  
 
     // DOM elements
     const booksContainer = document.getElementById('booksContainer');
@@ -24,22 +24,22 @@
         editBookForm.addEventListener('submit', handleEditBook);
     }
 
-    async function loadBooks() {
-        showLoading(true);
-        try {
-            const response = await fetch(API_BASE_URL);
-            const data = await response.json();
-            if (data.success) {
-                books = data.data;
-                renderBooks(books);
-            } else {
-                booksContainer.innerHTML = '<p class="text-danger">Failed to load books.</p>';
-            }
-        } catch (error) {
-            booksContainer.innerHTML = `<p class="text-danger">Error: ${error.message}</p>`;
+   async function loadBooks() {
+    showLoading(true);
+    try {
+        const response = await fetch(API_BASE_URL);
+        const data = await response.json();
+        if (data.success) {
+            books = data.data;
+            renderBooks(books);
+        } else {
+            booksContainer.innerHTML = '<p class="text-danger">Failed to load books.</p>';
         }
-        showLoading(false);
+    } catch (error) {
+        booksContainer.innerHTML = `<p class="text-danger">Error: ${error.message}</p>`;
     }
+    showLoading(false);
+}
 
     function renderBooks(booksToRender) {
         if (booksToRender.length === 0) {
