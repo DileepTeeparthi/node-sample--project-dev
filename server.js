@@ -16,23 +16,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // Serve static files from public directory
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Proxy middleware for API requests
-app.use('/api/books', async (req, res) => {
-  try {
-    const apiUrl = 'https://online-books-api.onrender.com/api/books';
-    const response = await axios({
-      method: req.method,
-      url: apiUrl + req.url,
-      data: req.body,
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    });
-    res.json(response.data);
-  } catch (error) {
-    res.status(error.response?.status || 500).json({ error: error.message });
-  }
-});
 
 // Routes
 app.use('/api/books', booksRouter);
