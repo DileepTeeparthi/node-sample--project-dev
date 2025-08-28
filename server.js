@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const axios = require('axios'); // Make sure to install axios: npm install axios
+const { createProxyMiddleware } = require('http-proxy-middleware');
 const booksRouter = require('./routes/books');
 const path = require('path');
 
@@ -16,6 +17,19 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // Serve static files from public directory
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Proxy middleware for external API
+app.use('/api/external/books', createProxyMiddleware({
+  target: 'https://online-books-api.onrender.com',
+  changeOrigin: true,
+  pathRewrite: {
+    '^/api/external/books': '/api/books'
+  },
+  onProxyRes: function (proxyRes, req, res) {
+    proxyRes.headers['Access-Control-Allow-Origin'] = '*';
+    proxyRes.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS';
+    proxyRes.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization';
+  }
+}));
 
 // Routes
 app.use('/api/books', booksRouter);

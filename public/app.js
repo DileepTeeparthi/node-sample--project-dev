@@ -1,5 +1,5 @@
-    // API base URL - using relative path to local API
-    const API_BASE_URL = '/api/books';   
+    // API base URL - using proxy to external API
+    const API_BASE_URL = '/api/external/books';   
 
     // DOM elements
     const booksContainer = document.getElementById('booksContainer');
